@@ -4,6 +4,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
+apply plugin: 'checkstyle'
 
 findbugs {
     toolVersion = "3.0.1"
@@ -15,6 +16,10 @@ findbugs {
     reportLevel = "high"
     visitors = ["FindSqlInjection", "SwitchFallthrough"]
     omitVisitors = ["FindNonShortCircuit"]
+}
+
+checkstyle {
+	ignoreFailures = true
 }
 
 pmd {
