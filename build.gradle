@@ -16,20 +16,47 @@ findbugs {
     reportLevel = "high"
     visitors = ["FindSqlInjection", "SwitchFallthrough"]
     omitVisitors = ["FindNonShortCircuit"]
+    findbugsTest.enabled = false
 }
 
 checkstyle {
-	ignoreFailures = true
+  ignoreFailures = true
+  checkstyleTest.enabled = false
 }
 
 pmd {
-	ignoreFailures = true
+  ignoreFailures = true
 }
 
 repositories {
-	mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-	compile 'junit:junit:4.12'
+  compile 'junit:junit:4.12'
 }
+
+task cpdMain(dependsOn: 'pmdMain') {
+  ext.ignoreFailures = true
+
+  doLast {
+    File outDir = new File(reporting.baseDir, 'cpd/')
+    // Make sure the output dir exists to prevent a ReportException
+    outDir.mkdirs()
+
+    ant.taskdef(name: 'cpd', classname: 'net.sourceforge.pmd.cpd.CPDTask',
+            classpath: configurations.pmd.asPath)
+
+    ant.cpd(
+        minimumTokenCount: '100',
+        format: 'xml',
+        outputFile: new File(outDir , 'main.xml')) {
+        fileset(dir: projectDir.getPath()) {
+              sourceSets.main.java.each { sourceDir ->
+                include(name: project.relativePath(sourceDir.getPath()))
+            }
+          }
+    }
+  }
+}
+check.dependsOn cpdMain
