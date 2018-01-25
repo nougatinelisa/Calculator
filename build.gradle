@@ -3,6 +3,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'findbugs'
+apply plugin: 'pmd'
 
 findbugs {
     toolVersion = "3.0.1"
@@ -14,6 +15,10 @@ findbugs {
     reportLevel = "high"
     visitors = ["FindSqlInjection", "SwitchFallthrough"]
     omitVisitors = ["FindNonShortCircuit"]
+}
+
+pmd {
+	ignoreFailures = true
 }
 
 repositories {
